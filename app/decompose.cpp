@@ -184,7 +184,7 @@ int main(int argc,const char **argv)
 		p.m_logger = &logging;
 		const char *inputFile = argv[1];
 		std::string path = "./decomp";
-		std::string path_with_file_ending = path + ".obj";
+		std::string path_with_file_ending = path + "_vhacd.obj";
 
 		ExportFormat format = ExportFormat::WAVEFRONT;
 
@@ -557,7 +557,7 @@ int main(int argc,const char **argv)
 				}
 				if ( format == ExportFormat::WAVEFRONT )
 				{
-					path_with_file_ending = path + ".obj";
+					path_with_file_ending = path + "_vhacd.obj";
 					// Save the decomposition into a single wavefront OBJ file
 					FILE *fph = fopen(path_with_file_ending.c_str(), "wb");
 					if ( fph )
@@ -591,7 +591,7 @@ int main(int argc,const char **argv)
 						}
 						fclose(fph);
 					}
-					path_with_file_ending = path + ".mtl";
+					path_with_file_ending = path + "_vhacd.mtl";
 					fph = fopen(path_with_file_ending.c_str(), "wb");
 					if (fph)
 					{
@@ -612,7 +612,7 @@ int main(int argc,const char **argv)
 				// Save the decomposition as a single STL file
 				else if ( format == ExportFormat::STL )
 				{	
-					path_with_file_ending = path + ".stl";
+					path_with_file_ending = path + "_vhacd.stl";
 					FILE *fph = fopen(path_with_file_ending.c_str(),"wb");
 					if ( fph )
 					{
