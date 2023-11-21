@@ -26,7 +26,7 @@ cmake --build build
 # Documentation
 Click this link to find detailed documentation for how to use the library:
 
-(https://docs.google.com/presentation/d/1OZ4mtZYrGEC8qffqb8F7Le2xzufiqvaPpRbLHKKgTIM/edit?usp=sharing)
+[pdf](doc/presentation/v-hacd_v4.pdf) [pptx](doc/presentation/v-hacd_v4.pptx) [Google presentation](https://docs.google.com/presentation/d/1OZ4mtZYrGEC8qffqb8F7Le2xzufiqvaPpRbLHKKgTIM/edit?usp=sharing)
 
 # Announcing Version 4.0 release!!
 
