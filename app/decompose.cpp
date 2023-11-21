@@ -173,6 +173,7 @@ int main(int argc,const char **argv)
 		printf("-l <minEdgeLength>      : Minimum size of a voxel edge. Default value is 2 voxels.\n");
 		printf("-p <true/false>         : If false, splits hulls in the middle. If true, tries to find optimal split plane location. False by default.\n");
 		printf("-o <obj/stl/usda>       : Export the convex hulls as a series of wavefront OBJ files, STL files, or a single USDA. Default is OBJ\n");
+		printf("-path <./filename>      : Define path and filename without file type. Default is './decomp'\n");
 		printf("-g <true/false>         : If set to false, no logging will be displayed.\n");
 	}
 	else
@@ -450,7 +451,7 @@ int main(int argc,const char **argv)
                     23,  190, 207,
                 };
 
-
+				/*
 				if ( dot && format != ExportFormat::NONE)
 				{
                     if ( format == ExportFormat::USDA )
@@ -555,6 +556,7 @@ int main(int argc,const char **argv)
 						}
 					}
 				}
+				*/
 				if ( format == ExportFormat::WAVEFRONT )
 				{
 					path_with_file_ending = path + "_vhacd.obj";
@@ -562,13 +564,17 @@ int main(int argc,const char **argv)
 					FILE *fph = fopen(path_with_file_ending.c_str(), "wb");
 					if ( fph )
 					{
-						printf("Saving Convex Decomposition results of %d convex hulls to 'decomp.obj'\n", iface->GetNConvexHulls());
-						fprintf(fph, "mtllib decomp.mtl\n");
+						printf("Saving Convex Decomposition results of %d convex hulls to %s\n", iface->GetNConvexHulls(), path_with_file_ending.c_str());
+						// fprintf(fph, "mtllib decomp.mtl\n");
+						// TODO: Change file name "frag_0_vhacd" according to fragment
+						fprintf(fph, "mtllib frag_0_vhacd.mtl\n");
 						uint32_t baseIndex = 1;
 						for (uint32_t i=0; i<iface->GetNConvexHulls(); i++)
 						{	
 							// add an object name for each single convex hull
-							fprintf(fph,"o %s%03d\n", baseName.c_str(), i);
+							// fprintf(fph,"o %s%03d\n", baseName.c_str(), i);
+							// TODO: Change file name "frag_0_" according to fragment
+							fprintf(fph,"o %s%03d\n", "frag_0_", i);
 
 							// add a material for each single convex hull
 							fprintf(fph, "usemtl Material%03d\n", i);
