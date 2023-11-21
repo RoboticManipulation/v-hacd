@@ -12,10 +12,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(TestVHACD TestVHACD.cpp FloatMath.cpp InParser.cpp wavefront.cpp SaveUSDA.cpp)
+add_executable(decompose decompose.cpp FloatMath.cpp InParser.cpp wavefront.cpp SaveUSDA.cpp)
 
 target_include_directories(TestVHACD PUBLIC "../include")
+target_include_directories(decompose PUBLIC "../include")
 # On Linux we need to add pthread to the link
 if (WIN32)
 else (WIN32)
 	target_link_libraries(TestVHACD pthread)
+	target_link_libraries(decompose pthread)
 endif (WIN32)
