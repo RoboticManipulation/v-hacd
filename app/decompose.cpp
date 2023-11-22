@@ -162,19 +162,20 @@ int main(int argc,const char **argv)
 	{
 		printf("Usage: TestVHACD <wavefront.obj> (options)\n");
 		printf("\n");
-		printf("-h <n>                  : Maximum number of output convex hulls. Default is 32\n");
-		printf("-r <voxelresolution>    : Total number of voxels to use. Default is 100,000\n");
-		printf("-e <volumeErrorPercent> : Volume error allowed as a percentage. Default is 1%%. Valid range is 0.001 to 10\n");
-		printf("-d <maxRecursionDepth>  : Maximum recursion depth. Default value is 10.\n");
-		printf("-s <true/false>         : Whether or not to shrinkwrap output to source mesh. Default is true.\n");
-		printf("-f <fillMode>           : Fill mode. Default is 'flood', also 'surface' and 'raycast' are valid.\n");
-		printf("-v <maxHullVertCount>   : Maximum number of vertices in the output convex hull. Default value is 64\n");
-		printf("-a <true/false>         : Whether or not to run asynchronously. Default is 'true'\n");
-		printf("-l <minEdgeLength>      : Minimum size of a voxel edge. Default value is 2 voxels.\n");
-		printf("-p <true/false>         : If false, splits hulls in the middle. If true, tries to find optimal split plane location. False by default.\n");
-		printf("-o <obj/stl/usda>       : Export the convex hulls as a series of wavefront OBJ files, STL files, or a single USDA. Default is OBJ\n");
-		printf("-path <./filename>      : Define path and filename without file type. Default is './decomp'\n");
-		printf("-g <true/false>         : If set to false, no logging will be displayed.\n");
+		printf("-h <n>                      : Maximum number of output convex hulls. Default is 32\n");
+		printf("-r <voxelresolution>        : Total number of voxels to use. Default is 100,000\n");
+		printf("-e <volumeErrorPercent>     : Volume error allowed as a percentage. Default is 1%%. Valid range is 0.001 to 10\n");
+		printf("-d <maxRecursionDepth>      : Maximum recursion depth. Default value is 10.\n");
+		printf("-s <true/false>             : Whether or not to shrinkwrap output to source mesh. Default is true.\n");
+		printf("-f <fillMode>               : Fill mode. Default is 'flood', also 'surface' and 'raycast' are valid.\n");
+		printf("-v <maxHullVertCount>       : Maximum number of vertices in the output convex hull. Default value is 64\n");
+		printf("-a <true/false>             : Whether or not to run asynchronously. Default is 'true'\n");
+		printf("-l <minEdgeLength>          : Minimum size of a voxel edge. Default value is 2 voxels.\n");
+		printf("-p <true/false>             : If false, splits hulls in the middle. If true, tries to find optimal split plane location. False by default.\n");
+		printf("-g <true/false>             : If set to false, no logging will be displayed.\n");
+		printf("-out_path <./pathToFolder/> : Define export path. Default is './'\n");
+		printf("-out_file <filename>        : Define export filename. Default is 'decomp_vhacd'\n");
+		printf("-o <obj/stl/usda>           : Export the convex hulls as a series of wavefront OBJ files, STL files, or a single USDA. Default is OBJ\n");
 	}
 	else
 	{
@@ -184,8 +185,10 @@ int main(int argc,const char **argv)
 		p.m_callback = &logging;
 		p.m_logger = &logging;
 		const char *inputFile = argv[1];
-		std::string path = "./decomp";
-		std::string path_with_file_ending = path + "_vhacd.obj";
+		std::string out_path = "./";
+		std::string out_file = "decomp_vhacd";
+		std::string out_type = ".obj";
+		std::string out_path_with_filename_and_type = out_path + out_file + out_type;
 
 		ExportFormat format = ExportFormat::WAVEFRONT;
 
@@ -239,32 +242,6 @@ int main(int argc,const char **argv)
 						p.m_minimumVolumePercentErrorAllowed = e;
 						printf("Minimum volume error allowed set to:%0.2f%%\n", p.m_minimumVolumePercentErrorAllowed);
 					}
-				}
-				else if ( strcmp(option,"-o") == 0 )
-				{
-					if ( strcmp(value,"obj") == 0 )
-					{
-						format = ExportFormat::WAVEFRONT;
-						printf("Saving the output convex hulls as a series of wavefront OBJ files.\n");
-					}
-					else if ( strcmp(value,"stl") == 0 )
-					{
-						format = ExportFormat::STL;
-						printf("Saving the output convex hulls as a single ASCII STL file.\n");
-					}
-                    else if (strcmp(value, "usda") == 0)
-                    {
-                        format = ExportFormat::USDA;
-                        printf("Saving the output convex hulls as a single USDA.\n");
-                    }
-					else
-					{
-						printf("Unknown export file format (%s). Currently only support 'obj' and 'stl'\n", value);
-					}
-				}
-				else if ( strcmp(option,"-path") == 0 )
-				{
-					path = value;
 				}
 				else if ( strcmp(option,"-d") == 0 )
 				{
@@ -384,6 +361,39 @@ int main(int argc,const char **argv)
 						printf("Invalid minimum voxel edge length, must be between 1 and 32\n");
 					}
 				}
+				else if ( strcmp(option,"-out_path") == 0 )
+				{
+					out_path = value;
+				}
+				else if ( strcmp(option,"-out_file") == 0 )
+				{
+					out_file = value;
+				}
+				else if ( strcmp(option,"-o") == 0 )
+				{
+					if ( strcmp(value,"obj") == 0 )
+					{
+						format = ExportFormat::WAVEFRONT;
+						out_type = ".obj";
+						printf("Saving the output convex hulls as a series of wavefront OBJ files.\n");
+					}
+					else if ( strcmp(value,"stl") == 0 )
+					{
+						format = ExportFormat::STL;
+						out_type = ".stl";
+						printf("Saving the output convex hulls as a single ASCII STL file.\n");
+					}
+                    else if (strcmp(value, "usda") == 0)
+                    {
+                        format = ExportFormat::USDA;
+						out_type = ".usda";
+                        printf("Saving the output convex hulls as a single USDA.\n");
+                    }
+					else
+					{
+						printf("Unknown export file format (%s). Currently only support 'obj' and 'stl'\n", value);
+					}
+				}
 			}
 #if VHACD_DISABLE_THREADING
 			VHACD::IVHACD *iface = VHACD::CreateVHACD();
@@ -434,8 +444,8 @@ int main(int argc,const char **argv)
 					}
 				}
 
-				char outputName[2048];
-				snprintf(outputName,sizeof(outputName),"%s_decompose.stl", baseName.c_str());
+				// char outputName[2048];
+				// snprintf(outputName,sizeof(outputName),"%s_decompose.stl", baseName.c_str());
 
                 // Colorize the decomposition result
                 std::array<std::array<uint8_t, 3>, 10> colorCycle{
@@ -559,22 +569,22 @@ int main(int argc,const char **argv)
 				*/
 				if ( format == ExportFormat::WAVEFRONT )
 				{
-					path_with_file_ending = path + "_vhacd.obj";
+					out_type = ".obj";
+					out_path_with_filename_and_type = out_path + out_file + out_type;
 					// Save the decomposition into a single wavefront OBJ file
-					FILE *fph = fopen(path_with_file_ending.c_str(), "wb");
+					FILE *fph = fopen(out_path_with_filename_and_type.c_str(), "wb");
 					if ( fph )
 					{
-						printf("Saving Convex Decomposition results of %d convex hulls to %s\n", iface->GetNConvexHulls(), path_with_file_ending.c_str());
+						printf("Saving Convex Decomposition results of %d convex hulls to %s\n", iface->GetNConvexHulls(), out_path_with_filename_and_type.c_str());
 						// fprintf(fph, "mtllib decomp.mtl\n");
 						// TODO: Change file name "frag_0_vhacd" according to fragment
-						fprintf(fph, "mtllib frag_0_vhacd.mtl\n");
+						fprintf(fph, "mtllib %s.mtl\n", out_file.c_str());
 						uint32_t baseIndex = 1;
 						for (uint32_t i=0; i<iface->GetNConvexHulls(); i++)
 						{	
 							// add an object name for each single convex hull
 							// fprintf(fph,"o %s%03d\n", baseName.c_str(), i);
-							// TODO: Change file name "frag_0_" according to fragment
-							fprintf(fph,"o %s%03d\n", "frag_0_", i);
+							fprintf(fph,"o %s_%03d\n", out_file.c_str(), i);
 
 							// add a material for each single convex hull
 							fprintf(fph, "usemtl Material%03d\n", i);
@@ -597,8 +607,9 @@ int main(int argc,const char **argv)
 						}
 						fclose(fph);
 					}
-					path_with_file_ending = path + "_vhacd.mtl";
-					fph = fopen(path_with_file_ending.c_str(), "wb");
+					out_type = ".mtl";
+					out_path_with_filename_and_type = out_path + out_file + out_type;
+					fph = fopen(out_path_with_filename_and_type.c_str(), "wb");
 					if (fph)
 					{
 						uint32_t colorIdx = 0;
@@ -618,11 +629,12 @@ int main(int argc,const char **argv)
 				// Save the decomposition as a single STL file
 				else if ( format == ExportFormat::STL )
 				{	
-					path_with_file_ending = path + "_vhacd.stl";
-					FILE *fph = fopen(path_with_file_ending.c_str(),"wb");
+					out_type = ".stl";
+					out_path_with_filename_and_type = out_path + out_file + out_type;
+					FILE *fph = fopen(out_path_with_filename_and_type.c_str(),"wb");
 					if ( fph )
 					{
-						printf("Saving convex hull results to a single file 'decomp.stl'\n");
+						printf("Saving convex hull results to a single file %s\n", out_path_with_filename_and_type.c_str());
 						for (uint32_t i=0; i<iface->GetNConvexHulls(); i++)
 						{
 							VHACD::IVHACD::ConvexHull ch;
@@ -631,7 +643,7 @@ int main(int argc,const char **argv)
 							if ( fph )
 							{
 								char hullName[2048];
-								snprintf(hullName,sizeof(hullName),"%s%03d", baseName.c_str(), i);
+								snprintf(hullName,sizeof(hullName),"%s_%03d", out_file.c_str(), i);
 								fprintf(fph,"solid %s\n", hullName);
 								for (uint32_t j = 0; j < ch.m_triangles.size(); j++)
 								{
